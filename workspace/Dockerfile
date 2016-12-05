@@ -168,10 +168,10 @@ RUN if [ ${INSTALL_NODE} = true ]; then \
     # Install nvm (A Node Version Manager)
     curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.6/install.sh | bash && \
         . $NVM_DIR/nvm.sh && \
-        nvm install ${NODE_VERSION} && \
+        NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node nvm install ${NODE_VERSION} && \
         nvm use ${NODE_VERSION} && \
         nvm alias ${NODE_VERSION} && \
-        npm install -g gulp bower vue-cli \
+        npm --registry https://registry.npm.taobao.org install -g gulp bower vue-cli \
 ;fi
 
 # Wouldn't execute when added to the RUN statement in the above block
