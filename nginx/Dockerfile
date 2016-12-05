@@ -6,6 +6,9 @@ ADD nginx.conf /etc/nginx/
 
 ARG PHP_UPSTREAM=php-fpm
 
+#RUN echo 'http://mirrors.ustc.edu.cn/alpine/v3.4/main/' | cat - /etc/apk/repositories > /etc/apk/temp && mv /etc/apk/temp /etc/apk/repositories
+RUN echo 'http://mirrors.ustc.edu.cn/alpine/v3.4/main/' > /etc/apk/repositories
+
 RUN apk update \
     && apk upgrade \
     && apk add --no-cache bash \

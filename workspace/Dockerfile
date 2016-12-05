@@ -61,6 +61,9 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Add the composer.json
 COPY ./composer.json /home/laradock/.composer/composer.json
+COPY ./config.json /home/laradock/.composer/config.json
+COPY ./auth.json.example /home/laradock/.composer/auth.json
+COPY ./auth.json /home/laradock/.composer/auth.json
 
 # Make sure that ~/.composer belongs to laradock
 RUN chown -R laradock:laradock /home/laradock/.composer
@@ -88,6 +91,7 @@ COPY ./crontab /var/spool/cron/crontabs
 ARG INSTALL_XDEBUG=false
 RUN if [ ${INSTALL_XDEBUG} = true ]; then \
     # Load the xdebug extension only with phpunit commands
+    sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list && \
     apt-get update && \
     apt-get install -y --force-yes php7.0-xdebug && \
     sed -i 's/^/;/g' /etc/php/7.0/cli/conf.d/20-xdebug.ini && \
@@ -155,6 +159,12 @@ ARG INSTALL_NODE=false
 ENV INSTALL_NODE ${INSTALL_NODE}
 ENV NVM_DIR /home/laradock/.nvm
 RUN if [ ${INSTALL_NODE} = true ]; then \
+    echo "" >> ~/.bashrc && \
+    echo 'export NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node' >> ~/.bashrc \
+;fi
+
+RUN if [ ${INSTALL_NODE} = true ]; then \
+    echo 'registry=https://registry.npm.taobao.org' >> ~/.npmrc && \
     # Install nvm (A Node Version Manager)
     curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.6/install.sh | bash && \
         . $NVM_DIR/nvm.sh && \
@@ -191,6 +201,7 @@ ARG INSTALL_YARN=false
 ENV INSTALL_YARN ${INSTALL_YARN}
 
 RUN if [ ${INSTALL_YARN} = true ]; then \
+    echo 'registry "https://registry.npm.taobao.org"' >> ~/.yarnrc && \
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && \
     curl -o- -L https://yarnpkg.com/install.sh | bash && \
     echo "" >> ~/.bashrc && \
@@ -201,6 +212,7 @@ RUN if [ ${INSTALL_YARN} = true ]; then \
 USER root
 
 RUN if [ ${INSTALL_YARN} = true ]; then \
+    echo 'registry "https://registry.npm.taobao.org"' >> ~/.yarnrc && \
     echo "" >> ~/.bashrc && \
     echo 'export YARN_DIR="/home/laradock/.yarn"' >> ~/.bashrc && \
     echo 'export PATH="$YARN_DIR/bin:$PATH"' >> ~/.bashrc \

@@ -16,14 +16,14 @@ services:
         build:
             context: ./workspace
             args:
-                - INSTALL_XDEBUG=false
+                - INSTALL_XDEBUG=true
                 - INSTALL_MONGO=false
-                - INSTALL_NODE=false
-                - INSTALL_YARN=false
+                - INSTALL_NODE=true
+                - INSTALL_YARN=true
                 - INSTALL_DRUSH=false
                 - INSTALL_AEROSPIKE_EXTENSION=false
-                - COMPOSER_GLOBAL_INSTALL=false
-                - INSTALL_WORKSPACE_SSH=false
+                - COMPOSER_GLOBAL_INSTALL=true
+                - INSTALL_WORKSPACE_SSH=true
                 - PUID=1000
                 - PGID=1000
                 - NODE_VERSION=stable
@@ -32,10 +32,14 @@ services:
             - applications
         extra_hosts:
             # IMPORTANT: Replace with your Docker Host IP (will be appended to /etc/hosts)
-            - "dockerhost:10.0.75.1"
+            - "dockerhost:10.200.10.1"
         ports:
            - "2222:22"
         tty: true
+        environment:
+            - APP_ENV=local
+#            - HTTP_PROXY=http://127.0.0.1:1984
+#            - HTTPS_PROXY=http://127.0.0.1:1984
 
 ### PHP-FPM Container #######################################
 
@@ -59,7 +63,7 @@ services:
             - workspace
         extra_hosts:
             # IMPORTANT: Replace with your Docker Host IP (will be appended to /etc/hosts)
-            - "dockerhost:10.0.75.1"
+            - "dockerhost:10.200.10.1"
         environment:
             # IMPORTANT: Set the Remote Interpreter entry matching name to `laravel`
             - PHP_IDE_CONFIG=serverName=laravel

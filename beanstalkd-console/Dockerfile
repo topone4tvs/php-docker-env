@@ -2,6 +2,8 @@ FROM php:latest
 
 MAINTAINER Mahmoud Zalt <mahmoud@zalt.me>
 
+RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list
+
 RUN apt-get update && apt-get install -y curl
 
 RUN curl -sL https://github.com/ptrofimov/beanstalk_console/archive/master.tar.gz | tar xvz -C /tmp
