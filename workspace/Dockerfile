@@ -161,6 +161,7 @@ ENV NVM_DIR /home/laradock/.nvm
 RUN if [ ${INSTALL_NODE} = true ]; then \
     echo "" >> ~/.bashrc && \
     echo 'export NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node' >> ~/.bashrc \
+    echo 'export NVMW_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node' >> ~/.bashrc \
 ;fi
 
 RUN if [ ${INSTALL_NODE} = true ]; then \
@@ -171,7 +172,8 @@ RUN if [ ${INSTALL_NODE} = true ]; then \
         NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node nvm install ${NODE_VERSION} && \
         nvm use ${NODE_VERSION} && \
         nvm alias ${NODE_VERSION} && \
-        npm --registry https://registry.npm.taobao.org install -g gulp bower vue-cli \
+        npm --registry https://registry.npm.taobao.org install -g gulp bower vue-cli cnpm && \
+        npm config set registry https://registry.npm.taobao.org \
 ;fi
 
 # Wouldn't execute when added to the RUN statement in the above block
@@ -203,7 +205,9 @@ ENV INSTALL_YARN ${INSTALL_YARN}
 RUN if [ ${INSTALL_YARN} = true ]; then \
     echo 'registry "https://registry.npm.taobao.org"' >> ~/.yarnrc && \
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" && \
-    curl -o- -L https://yarnpkg.com/install.sh | bash && \
+    npm --registry https://registry.npm.taobao.org install -g yarn cyarn && \
+    yarn config set registry https://registry.npm.taobao.org && \
+#    curl -o- -L https://yarnpkg.com/install.sh | bash && \
     echo "" >> ~/.bashrc && \
     echo 'export PATH="$HOME/.yarn/bin:$PATH"' >> ~/.bashrc \
 ;fi
@@ -212,7 +216,6 @@ RUN if [ ${INSTALL_YARN} = true ]; then \
 USER root
 
 RUN if [ ${INSTALL_YARN} = true ]; then \
-    echo 'registry "https://registry.npm.taobao.org"' >> ~/.yarnrc && \
     echo "" >> ~/.bashrc && \
     echo 'export YARN_DIR="/home/laradock/.yarn"' >> ~/.bashrc && \
     echo 'export PATH="$YARN_DIR/bin:$PATH"' >> ~/.bashrc \
