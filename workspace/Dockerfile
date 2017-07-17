@@ -63,7 +63,6 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 COPY ./composer.json /home/laradock/.composer/composer.json
 COPY ./config.json /home/laradock/.composer/config.json
 COPY ./auth.json.example /home/laradock/.composer/auth.json
-COPY ./auth.json /home/laradock/.composer/auth.json
 
 # Make sure that ~/.composer belongs to laradock
 RUN chown -R laradock:laradock /home/laradock/.composer
@@ -88,7 +87,7 @@ COPY ./crontab /var/spool/cron/crontabs
 # xDebug:
 #####################################
 
-ARG INSTALL_XDEBUG=false
+ARG INSTALL_XDEBUG=true
 RUN if [ ${INSTALL_XDEBUG} = true ]; then \
     # Load the xdebug extension only with phpunit commands
     sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list && \
@@ -103,7 +102,7 @@ COPY ./xdebug.ini /etc/php/7.0/cli/conf.d/xdebug.ini
 #####################################
 # ssh:
 #####################################
-ARG INSTALL_WORKSPACE_SSH=false
+ARG INSTALL_WORKSPACE_SSH=true
 ENV INSTALL_WORKSPACE_SSH ${INSTALL_WORKSPACE_SSH}
 
 ADD insecure_id_rsa /tmp/id_rsa
@@ -124,7 +123,7 @@ RUN if [ ${INSTALL_WORKSPACE_SSH} = true ]; then \
 #####################################
 
 # Check if Mongo needs to be installed
-ARG INSTALL_MONGO=false
+ARG INSTALL_MONGO=true
 ENV INSTALL_MONGO ${INSTALL_MONGO}
 RUN if [ ${INSTALL_MONGO} = true ]; then \
     # Install the mongodb extension
@@ -155,7 +154,7 @@ USER laradock
 # Check if NVM needs to be installed
 ARG NODE_VERSION=stable
 ENV NODE_VERSION ${NODE_VERSION}
-ARG INSTALL_NODE=false
+ARG INSTALL_NODE=true
 ENV INSTALL_NODE ${INSTALL_NODE}
 ENV NVM_DIR /home/laradock/.nvm
 RUN if [ ${INSTALL_NODE} = true ]; then \

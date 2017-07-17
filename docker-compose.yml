@@ -8,7 +8,7 @@ services:
         image: tianon/true
         volumes:
             - ../:/var/www
-#            - ../sample/:/var/www/sample
+            - /private/var/www/projects:/var/www/projects
 
 ### Workspace Utilities Container ###########################
 
@@ -17,12 +17,12 @@ services:
             context: ./workspace
             args:
                 - INSTALL_XDEBUG=true
-                - INSTALL_MONGO=false
+                - INSTALL_MONGO=true
                 - INSTALL_NODE=true
                 - INSTALL_YARN=true
                 - INSTALL_DRUSH=false
                 - INSTALL_AEROSPIKE_EXTENSION=false
-                - COMPOSER_GLOBAL_INSTALL=true
+                - COMPOSER_GLOBAL_INSTALL=false
                 - INSTALL_WORKSPACE_SSH=true
                 - PUID=1000
                 - PGID=1000
@@ -32,7 +32,7 @@ services:
             - applications
         extra_hosts:
             # IMPORTANT: Replace with your Docker Host IP (will be appended to /etc/hosts)
-            - "dockerhost:10.200.10.1"
+            - "dockerhost:10.10.111.152"
         ports:
            - "2222:22"
         tty: true
@@ -47,23 +47,24 @@ services:
         build:
             context: ./php-fpm
             args:
-                - INSTALL_XDEBUG=false
-                - INSTALL_MONGO=false
+                - INSTALL_XDEBUG=true
+                - INSTALL_MONGO=true
                 - INSTALL_ZIP_ARCHIVE=false
-                - INSTALL_MEMCACHED=false
+                - INSTALL_MEMCACHED=true
                 - INSTALL_OPCACHE=false
                 - INSTALL_AEROSPIKE_EXTENSION=false
                 - CODEIGNITER=false
-            dockerfile: Dockerfile-70
+            dockerfile: Dockerfile-71
         volumes_from:
             - applications
         expose:
             - "9000"
+            - "9090"
         links:
             - workspace
         extra_hosts:
             # IMPORTANT: Replace with your Docker Host IP (will be appended to /etc/hosts)
-            - "dockerhost:10.200.10.1"
+            - "dockerhost:10.10.111.152"
         environment:
             # IMPORTANT: Set the Remote Interpreter entry matching name to `laravel`
             - PHP_IDE_CONFIG=serverName=laravel
@@ -83,6 +84,8 @@ services:
         ports:
             - "80:80"
             - "443:443"
+            - "8899:8080"
+            - "9090:9090"
         links:
             - php-fpm
 
@@ -134,14 +137,14 @@ services:
     mariadb:
         build: ./mariadb
         volumes:
-            - mysql:/var/lib/mysql
+            - ./mariadb/dir:/var/lib/mysql
         ports:
             - "3306:3306"
         environment:
-            MYSQL_DATABASE: homestead
-            MYSQL_USER: homestead
-            MYSQL_PASSWORD: secret
-            MYSQL_ROOT_PASSWORD: root
+            #MYSQL_DATABASE: topone4tvs
+            #MYSQL_USER: topone4tvs
+            #MYSQL_PASSWORD: new-secret
+            MYSQL_ROOT_PASSWORD: root-secret
 
 ### PostgreSQL Container ####################################
 
@@ -242,7 +245,7 @@ services:
         ports:
             - "5672:5672"
             - "15671:15671"
-            - "8080:15672"
+            - "15672:15672"
         privileged: true
         environment:
             RABBITMQ_DEFAULT_USER: guest

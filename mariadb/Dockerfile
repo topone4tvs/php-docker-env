@@ -2,6 +2,6 @@ FROM mariadb:latest
 
 MAINTAINER Mahmoud Zalt <mahmoud@zalt.me>
 
-CMD ["mysqld"]
+#CMD ["mysqld"]
 
 EXPOSE 3306
