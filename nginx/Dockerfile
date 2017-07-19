@@ -19,4 +19,4 @@ RUN apk update \
 
 CMD ["nginx"]
 
-EXPOSE 80 443 8899 9090
+EXPOSE 80 443 8899
