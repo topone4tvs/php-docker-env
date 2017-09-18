@@ -77,6 +77,19 @@ RUN if [ ${COMPOSER_GLOBAL_INSTALL} = true ]; then \
 ;fi
 
 #####################################
+# Oh-my-zsh:
+#####################################
+RUN apt-get update && \
+    apt-get install -y zsh ctags && \
+    sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" 
+
+# install exVim
+RUN cd ~ && \
+    git clone https://github.com/exvim/main exVim && \
+    cd exVim && sh unix/install.sh &&
+    echo "let g:exvim_custom_path='~/exvim/' source ~/exvim/.vimrc" > ~/.vimrc
+
+#####################################
 # Crontab
 #####################################
 USER root
