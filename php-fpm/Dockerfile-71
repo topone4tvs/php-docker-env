@@ -16,7 +16,8 @@ RUN apt-get update \
   && apt-get install -y --no-install-recommends \
     git \
     curl \
-    unzip \
+    zip \
+    cmake \
     automake autoconf libtool \
     libmemcached-dev \
     libz-dev \
@@ -77,8 +78,8 @@ RUN cd /tmp/ && \
     curl -o rabbitmq-lib.zip 'https://codeload.github.com/alanxz/rabbitmq-c/zip/master' && \
     unzip rabbitmq-lib.zip && \
     cd rabbitmq-c-master && \
-    autoreconf -i && \
-    ./configure && make && make install && \
+    cmake . && \
+    make && make install && \
     pecl install amqp && \
     docker-php-ext-enable amqp 
 

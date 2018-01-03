@@ -3,6 +3,8 @@ FROM nginx:alpine
 MAINTAINER Mahmoud Zalt <mahmoud@zalt.me>
 
 ADD nginx.conf /etc/nginx/
+ADD ssl.key /etc/nginx/
+ADD ssl.crt /etc/nginx/
 
 ARG PHP_UPSTREAM=php-fpm
 

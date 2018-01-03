@@ -75,26 +75,26 @@ RUN if [ ${COMPOSER_GLOBAL_INSTALL} = true ]; then \
     # run the install
     composer global install \
 ;fi
-
-#####################################
-# Oh-my-zsh:
-#####################################
-RUN apt-get update && \
-    apt-get install -y zsh ctags && \
-    sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" 
-
-# install exVim
-RUN cd ~ && \
-    git clone https://github.com/exvim/main exVim && \
-    cd exVim && sh unix/install.sh &&
-    echo "let g:exvim_custom_path='~/exvim/' source ~/exvim/.vimrc" > ~/.vimrc
-
 #####################################
 # Crontab
 #####################################
 USER root
 
 COPY ./crontab /var/spool/cron/crontabs
+
+#####################################
+# Oh-my-zsh:
+#####################################
+RUN sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get install -y zsh ctags && \
+    curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | bash 
+
+# install exVim
+RUN cd ~ && \
+    git clone https://github.com/exvim/main exVim && \
+    cd exVim && sh unix/install.sh && \
+    echo "let g:exvim_custom_path='~/exvim/' source ~/exvim/.vimrc" > ~/.vimrc
 
 #####################################
 # xDebug:
@@ -111,6 +111,20 @@ RUN if [ ${INSTALL_XDEBUG} = true ]; then \
 ;fi
 # ADD for REMOTE debugging
 COPY ./xdebug.ini /etc/php/7.0/cli/conf.d/xdebug.ini
+
+#####################################
+# Amqp:
+#####################################
+RUN cd /tmp/ && \
+    apt-get install -y --no-install-recommends zip cmake && \
+    curl -o rabbitmq-lib.zip 'https://codeload.github.com/alanxz/rabbitmq-c/zip/master' && \
+    unzip rabbitmq-lib.zip && \
+    cd rabbitmq-c-master && \
+    cmake . && \
+    make && make install && \
+    pecl install amqp && \
+    docker-php-ext-enable amqp 
+
 
 #####################################
 # ssh:

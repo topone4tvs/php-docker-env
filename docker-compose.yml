@@ -39,9 +39,11 @@ services:
             - applications
         extra_hosts:
             # IMPORTANT: Replace with your Docker Host IP (will be appended to /etc/hosts)
-            - "dockerhost:10.10.111.152"
+            - "dockerhost:10.10.108.240"
         ports:
            - "2222:22"
+           - "1017:1017"
+           - "4017:4017"
         tty: true
         environment:
             - APP_ENV=local

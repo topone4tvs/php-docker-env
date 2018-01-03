@@ -1,0 +1,5 @@
+{
+    "require": {
+        "socialiteproviders/weibo": "^3.0"
+    }
+}
