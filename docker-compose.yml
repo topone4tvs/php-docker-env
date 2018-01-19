@@ -329,6 +329,16 @@ services:
         links:
             - php-fpm
 
+### Go Container #################################
+
+    go-workspace:
+        build: ./go-workspace
+        volumes_from:
+            - applications
+        ports:
+            - "8765:8765"
+
+
 ### Volumes Setup ###########################################
 
 volumes:
