@@ -41,10 +41,13 @@ RUN docker-php-ext-install mcrypt \
     # Install the PHP gd library
     && docker-php-ext-configure gd \
         --enable-bcmath \
+        --enable-pcntl \
         --enable-sockets \
         --enable-gd-native-ttf \
         --with-jpeg-dir=/usr/lib \
         --with-freetype-dir=/usr/include/freetype2 && \
+        docker-php-ext-install pcntl && \
+        docker-php-ext-enable pcntl  && \
         docker-php-ext-install gd && \
         docker-php-ext-install sockets  && \
         docker-php-ext-enable sockets  && \

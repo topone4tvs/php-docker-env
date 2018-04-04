@@ -19,34 +19,33 @@ services:
 
 ### Workspace Utilities Container ###########################
 
-    workspace:
-        build:
-            context: ./workspace
-            args:
-                - INSTALL_XDEBUG=true
-                - INSTALL_MONGO=true
-                - INSTALL_NODE=true
-                - INSTALL_YARN=true
-                - INSTALL_DRUSH=false
-                - INSTALL_AEROSPIKE_EXTENSION=false
-                - COMPOSER_GLOBAL_INSTALL=false
-                - INSTALL_WORKSPACE_SSH=true
-                - PUID=1000
-                - PGID=1000
-                - NODE_VERSION=stable
-                - TZ=UTC
-        volumes_from:
-            - applications
-        extra_hosts:
-            # IMPORTANT: Replace with your Docker Host IP (will be appended to /etc/hosts)
-            - "dockerhost:10.10.108.240"
-        ports:
-           - "2222:22"
-           - "1017:1017"
-           - "4017:4017"
-        tty: true
-        environment:
-            - APP_ENV=local
+             #    workspace:
+             #        build:
+             #            context: ./workspace
+             #            args:
+             #                - INSTALL_XDEBUG=true
+             #                - INSTALL_MONGO=true
+             #                - INSTALL_NODE=true
+             #                - INSTALL_YARN=true
+             #                - INSTALL_DRUSH=false
+             #                - INSTALL_AEROSPIKE_EXTENSION=false
+             #                - COMPOSER_GLOBAL_INSTALL=false
+             #                - INSTALL_WORKSPACE_SSH=true
+             #                - PUID=1000
+             #                - PGID=1000
+             #                - NODE_VERSION=stable
+             #                - TZ=UTC
+             #        volumes_from:
+             #            - applications
+             #        extra_hosts:
+             #            # IMPORTANT: Replace with your Docker Host IP (will be appended to /etc/hosts)
+             #            - "dockerhost:10.10.108.240"
+             #        ports:
+             #           - "2222:22"
+             #           - "4017:4017"
+             #        tty: true
+             #        environment:
+             #            - APP_ENV=local
 #            - HTTP_PROXY=http://127.0.0.1:1984
 #            - HTTPS_PROXY=http://127.0.0.1:1984
 
@@ -69,12 +68,9 @@ services:
         expose:
             - "9000"
             - "9090"
-        links:
-            - workspace
-            - mongo
         extra_hosts:
             # IMPORTANT: Replace with your Docker Host IP (will be appended to /etc/hosts)
-            - "dockerhost:192.168.31.215"
+            - "dockerhost:10.10.108.240"
         environment:
             # IMPORTANT: Set the Remote Interpreter entry matching name to `laravel`
             - PHP_IDE_CONFIG=serverName=laravel
@@ -94,38 +90,40 @@ services:
         ports:
             - "80:80"
             - "443:443"
+            - "1017:1017"
+            - "1027:1027"
             - "8899:8080"
         links:
             - php-fpm
-            - mongo
+            - java_dev
 
 ### Apache Server Container #################################
 
-    apache2:
-        build:
-            context: ./apache2
-            args:
-                - PHP_SOCKET=php-fpm:9000
-        volumes_from:
-            - applications
-        volumes:
-            - ./logs/apache2:/var/log/apache2
-        ports:
-            - "80:80"
-            - "443:443"
-        links:
-            - php-fpm
+              #    apache2:
+              #        build:
+              #            context: ./apache2
+              #            args:
+              #                - PHP_SOCKET=php-fpm:9000
+              #        volumes_from:
+              #            - applications
+              #        volumes:
+              #            - ./logs/apache2:/var/log/apache2
+              #        ports:
+              #            - "80:80"
+              #            - "443:443"
+              #        links:
+              #            - php-fpm
 
 ### HHVM Container ##########################################
 
-    hhvm:
-        build: ./hhvm
-        volumes_from:
-            - applications
-        expose:
-            - "9000"
-        links:
-            - workspace
+              #    hhvm:
+              #        build: ./hhvm
+              #        volumes_from:
+              #            - applications
+              #        expose:
+              #            - "9000"
+              #              #links:
+              #            #            - workspace
 
 ### MySQL Container #########################################
 
@@ -216,8 +214,8 @@ services:
 
     aerospike:
         build: ./aerospike
-        volumes_from:
-            - workspace
+        #volumes_from:
+            #           - workspace
         volumes:
             - aerospike:/opt/aerospike/data
         ports:
@@ -329,15 +327,25 @@ services:
         links:
             - php-fpm
 
-### Go Container #################################
+### Java Container #################################
 
-    go-workspace:
-        build: ./go-workspace
+    java_dev:
+        build: ./java_dev
         volumes_from:
             - applications
         ports:
-            - "8765:8765"
+            - "9511:9511"
 
+### Go Container #################################
+
+              #    go_dev:
+              #        build: ./go_dev
+              #        volumes_from:
+              #            - applications
+              #        expose:
+              #            - "7511"
+              #        ports:
+              #            - "7511:7511"
 
 ### Volumes Setup ###########################################
 
