@@ -14,8 +14,10 @@ services:
     composer:
         build:
             context: ./composer
+        volumes_from:
+            - applications
         ports:
-           - "8088:8088"
+           - "9188:9188"
 
 ### Workspace Utilities Container ###########################
 
@@ -59,7 +61,8 @@ services:
                 - INSTALL_MONGO=true
                 - INSTALL_ZIP_ARCHIVE=true
                 - INSTALL_MEMCACHED=true
-                - INSTALL_OPCACHE=false
+                - INSTALL_PHPREDIS=true
+                - INSTALL_OPCACHE=true
                 - INSTALL_AEROSPIKE_EXTENSION=false
                 - CODEIGNITER=false
             dockerfile: Dockerfile-71
@@ -70,7 +73,7 @@ services:
             - "9090"
         extra_hosts:
             # IMPORTANT: Replace with your Docker Host IP (will be appended to /etc/hosts)
-            - "dockerhost:10.10.108.240"
+            - "dockerhost:10.10.10.116"
         environment:
             # IMPORTANT: Set the Remote Interpreter entry matching name to `laravel`
             - PHP_IDE_CONFIG=serverName=laravel
@@ -95,7 +98,7 @@ services:
             - "8899:8080"
         links:
             - php-fpm
-            - java_dev
+            - development
 
 ### Apache Server Container #################################
 
@@ -336,6 +339,18 @@ services:
         ports:
             - "9511:9511"
 
+### Inception Container #################################
+
+    inception:
+        build: ./inception
+        volumes_from:
+            - applications
+        expose:
+            - "8511"
+        ports:
+            - "8511:8511"
+
+
 ### Go Container #################################
 
               #    go_dev:
@@ -346,6 +361,31 @@ services:
               #            - "7511"
               #        ports:
               #            - "7511:7511"
+
+### Development Container #################################
+
+    development:
+        build: ./development
+        volumes_from:
+            - applications
+        expose:
+            - "8611"
+        ports:
+            - "8611:8611"
+
+### YApi Container ##########################################
+    
+    yapi:
+        build: ./yapi
+        volumes_from:
+            - applications
+        expose:
+            - "9699"
+        ports:
+            - "9699:9699"
+        links:
+            - mongo 
+
 
 ### Volumes Setup ###########################################
 

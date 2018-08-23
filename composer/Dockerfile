@@ -1,7 +1,7 @@
-FROM alpine:latest
+FROM registry.cn-hangzhou.aliyuncs.com/acs-sample/alpine
 
-MAINTAINER Mahmoud Zalt <mahmoud@zalt.me>
+MAINTAINER Topone4tvs <topone4tvs@163.com>
 
-#CMD ["mysqld"]
+EXPOSE 9188
 
-EXPOSE 8088
+CMD ["sh", "-c", "while true;do echo hello docker;sleep 1;done;"]
